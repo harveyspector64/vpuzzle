@@ -1,0 +1,822 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta name="theme-color" content="#ffd9e6" />
+  <title>Our California Road‑Trip Love Word Search</title>
+
+  <!-- Cute, beachy fonts -->
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      /* Palette: pastel sunset → ocean */
+      --sky-top: #ffe6ef;
+      --sky-mid: #ffd9c8;
+      --sunset: #ffd1dc;
+      --ocean: #c6f0ff;
+      --sea: #9dd9ff;
+      --ink: #233142;
+      --rose: #ff8fb1;
+      --heart: #ff5f9e;
+      --mint: #e6fff5;
+      --sand: #fff6e6;
+      --lav:  #efe3ff;
+      --grid-bg: #ffffffcc;
+      --grid-cell: #ffffff;
+      --grid-border: #f4e7ff;
+      --found: #ffd9e6;
+      --accent: #ff7aa2;
+      --accent-2: #78c5ff;
+      --ok: #1f9d7a;
+      --warn: #e97777;
+    }
+
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      color:var(--ink);
+      font-family:"Poppins",system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
+      background:
+        linear-gradient(180deg,var(--sky-top) 0%, var(--sky-mid) 30%, var(--sunset) 50%, var(--ocean) 70%, var(--sea) 100%);
+      min-height:100svh;
+      overflow-x:hidden;
+    }
+
+    /* Floating hearts background */
+    .hearts{
+      position:fixed; inset:0; pointer-events:none; overflow:hidden; z-index:0;
+    }
+    .hearts span{
+      position:absolute;
+      bottom:-2rem;
+      font-size:clamp(18px,2.5vw,26px);
+      color:var(--heart);
+      opacity:.25;
+      animation:floatUp linear forwards;
+    }
+    @keyframes floatUp{
+      0%{transform:translateY(0) translateX(0) rotate(0deg); opacity:.15}
+      100%{transform:translateY(-120vh) translateX(var(--shift)) rotate(25deg); opacity:0}
+    }
+
+    .wrap{
+      position:relative; z-index:1;
+      max-width:1000px; margin:0 auto; padding:22px 16px 32px;
+    }
+
+    header{
+      display:flex; align-items:center; gap:12px; flex-wrap:wrap; justify-content:space-between;
+      margin-bottom:12px;
+    }
+    .title{
+      display:flex; align-items:center; gap:12px; flex-wrap:wrap;
+    }
+    .logo{
+      width:48px; height:48px; border-radius:50%;
+      display:grid; place-items:center; background:radial-gradient(circle at 40% 40%, #fff 0 35%, #ffd1dc 36% 100%);
+      box-shadow:0 6px 14px rgba(0,0,0,.08), inset 0 0 0 2px #fff7;
+      font-family:"Pacifico",cursive; color:var(--heart);
+    }
+    h1{
+      font-family:"Pacifico",cursive; font-weight:400; font-size:clamp(22px,5.4vw,36px);
+      margin:0; letter-spacing:.4px; color:#c74173; text-shadow:0 2px 0 #fff8;
+    }
+    .subtitle{
+      margin:0; font-size:13px; opacity:.8
+    }
+
+    .controls{
+      display:flex; gap:8px; flex-wrap:wrap;
+    }
+    button, .btn{
+      border:0; padding:10px 14px; border-radius:12px;
+      background:linear-gradient(180deg,#fff,#ffeef6);
+      box-shadow:0 2px 0 #ffb7ce88, 0 6px 16px rgba(0,0,0,.08);
+      color:#c13b73; font-weight:600; cursor:pointer;
+      transition:transform .05s ease, filter .2s ease;
+    }
+    button:hover{filter:brightness(1.03)}
+    button:active{transform:translateY(1px)}
+    .btn-secondary{ background:linear-gradient(180deg,#fff,#eef7ff); color:#1b6aa6; box-shadow:0 2px 0 #a6d5ff88, 0 6px 16px rgba(0,0,0,.08);}
+    .btn-ghost{ background:transparent; box-shadow:none; border:2px dashed #ffffff88; color:#2a5b8a }
+
+    .deck{
+      display:grid; gap:16px;
+      grid-template-columns:1fr;
+    }
+    @media (min-width:900px){
+      .deck{ grid-template-columns: minmax(0,1.15fr) minmax(0,.85fr); }
+    }
+
+    .card{
+      background:linear-gradient(180deg,var(--grid-bg),#fff);
+      border-radius:18px;
+      padding:14px;
+      box-shadow:0 10px 26px rgba(0,0,0,.10), inset 0 0 0 1px #fff6;
+    }
+
+    /* Grid */
+    .grid-wrap{
+      display:grid; place-items:center;
+    }
+    .grid{
+      --size: 16;
+      width:min(92vw, 680px);
+      aspect-ratio:1/1;
+      display:grid;
+      grid-template-columns: repeat(var(--size), 1fr);
+      grid-auto-rows: 1fr;
+      gap:2px;
+      background:linear-gradient(180deg,#fff8,#fff1);
+      border-radius:16px; padding:8px;
+      box-shadow: inset 0 0 0 1px var(--grid-border), 0 6px 22px rgba(0,0,0,.07);
+      touch-action:none; /* enables smooth pointer interaction on mobile */
+      user-select:none;
+    }
+    .cell{
+      display:grid; place-items:center; font-weight:600;
+      background:var(--grid-cell);
+      border-radius:10px;
+      box-shadow:inset 0 0 0 1px #f3e7ff;
+      font-size:clamp(14px, 2.5vw, 22px);
+      letter-spacing:.5px;
+      transition:background .08s ease, color .08s ease, transform .06s ease;
+    }
+    .cell.selecting{ background:#fff4fa; }
+    .cell.found{ background:var(--found); color:#b22762; box-shadow:inset 0 0 0 2px #ffc3da; }
+    .cell.hint{ outline:2px dashed #ffc1db; }
+
+    .panel{
+      display:flex; flex-direction:column; gap:12px;
+    }
+
+    .pill{
+      display:flex; align-items:center; gap:8px; flex-wrap:wrap;
+      padding:10px 12px; border-radius:12px; background:linear-gradient(180deg,#fff,#fff7);
+      box-shadow:inset 0 0 0 1px #f0eaff;
+      font-size:14px;
+    }
+    .pill label{opacity:.8}
+
+    .clues{
+      margin:0; padding:0; list-style:none; display:flex; flex-direction:column; gap:8px;
+      max-height:min(54vh,480px); overflow:auto;
+    }
+    .clues li{
+      background:linear-gradient(180deg,#fff,#fff8);
+      border-radius:12px; padding:10px 12px;
+      box-shadow:inset 0 0 0 1px #f1e9ff;
+      display:flex; align-items:flex-start; gap:10px;
+    }
+    .clues .status{
+      width:22px; height:22px; border-radius:50%; display:grid; place-items:center;
+      font-size:14px; flex:0 0 22px;
+      background:#ffe8f1; color:#c13b73; border:1px solid #ffd2e2;
+    }
+    .clues li.found .status{ background:#eafff5; color:var(--ok); border-color:#b9f1de }
+    .clue-text{ font-size:14px; line-height:1.35 }
+    .clue-word{ opacity:.6; font-size:12px }
+
+    details{
+      border-radius:14px; background:linear-gradient(180deg,#ffffff,#fff7);
+      box-shadow:inset 0 0 0 1px #f0eaff;
+      padding:10px 12px;
+    }
+    details > summary{
+      list-style:none; cursor:pointer; font-weight:600; color:#1b6aa6;
+      display:flex; align-items:center; gap:8px;
+    }
+    details[open]{ box-shadow:inset 0 0 0 1px #d6ecff, 0 8px 24px rgba(0,0,0,.06); }
+
+    .editor{
+      display:grid; gap:10px; margin-top:8px;
+    }
+    .editor textarea{
+      width:100%; min-height:160px; resize:vertical;
+      border:1px solid #e6dfff; border-radius:12px; padding:10px 12px;
+      background:#fff; font: 13px/1.4 "Poppins",sans-serif;
+    }
+    .row{
+      display:flex; gap:10px; flex-wrap:wrap;
+    }
+    .row > *{ flex:1 1 150px }
+    input[type="text"], input[type="number"]{
+      width:100%; border:1px solid #e6dfff; border-radius:12px; padding:10px 12px; background:#fff;
+      font: 14px/1.2 "Poppins",sans-serif;
+    }
+    input[type="checkbox"]{ transform: translateY(1px) }
+    .small{font-size:12px; opacity:.7}
+    .progress{ font-size:13px; opacity:.85 }
+
+    /* Win ribbon */
+    .ribbon{
+      position:fixed; inset:0; display:none; place-items:center; z-index:3;
+      backdrop-filter: blur(3px);
+    }
+    .ribbon.show{ display:grid; }
+    .ribbon .inner{
+      background:linear-gradient(180deg,#fff,#fff5f9);
+      border-radius:18px; padding:20px 18px; text-align:center;
+      box-shadow:0 18px 40px rgba(0,0,0,.12), inset 0 0 0 1px #ffd6e6;
+      max-width:min(92vw, 420px);
+      animation:pop .18s ease;
+    }
+    @keyframes pop{ from{ transform:scale(.97); opacity:.6 } to{ transform:scale(1); opacity:1 } }
+    .inner h3{ font-family:"Pacifico"; font-weight:400; margin:0 0 8px; color:#c13b73 }
+    .inner p{ margin:0 0 12px; }
+
+    footer{ margin-top:12px; text-align:center; font-size:12px; opacity:.7 }
+  </style>
+</head>
+<body>
+  <!-- Floating hearts -->
+  <div class="hearts" id="bgHearts" aria-hidden="true"></div>
+
+  <div class="wrap">
+    <header>
+      <div class="title">
+        <div class="logo">♥</div>
+        <div>
+          <h1 id="pageTitle">Our California Road‑Trip Love Word Search</h1>
+          <p class="subtitle">Beach Boys energy, pastel sunset, and all our little memories 🌴</p>
+        </div>
+      </div>
+      <div class="controls">
+        <button id="btnRegenerate">Regenerate ✨</button>
+        <button class="btn-secondary" id="btnReveal">Reveal All</button>
+      </div>
+    </header>
+
+    <div class="deck">
+      <!-- Grid -->
+      <section class="card grid-wrap">
+        <div class="pill">
+          <span class="progress"><strong id="foundCount">0</strong>/<span id="totalCount">0</span> found</span>
+          <span class="small">Tap & drag in straight lines (↔ ↕ ↘ ↙ ↗ ↖)</span>
+        </div>
+        <div class="grid" id="grid" aria-label="Word search grid"></div>
+      </section>
+
+      <!-- Clues + Editor -->
+      <section class="card panel">
+        <div class="pill">
+          <label for="dedication">Dedication:</label>
+          <input id="dedication" type="text" placeholder="For you, sunshine ☀️" />
+        </div>
+
+        <ul class="clues" id="clues"></ul>
+
+        <details id="editorBox">
+          <summary>✏️ Edit Words</summary>
+          <div class="editor">
+            <p class="small">
+              Enter one per line: <code>Display Word | Clue</code>.  
+              Spaces & punctuation are removed for the grid (digits are okay).  
+              Example: <em>Highway 154 | Road we took instead of 101.</em>
+            </p>
+            <textarea id="lines"></textarea>
+
+            <div class="row">
+              <label class="pill">
+                <input type="checkbox" id="diagonals" checked />
+                Allow diagonals
+              </label>
+              <label class="pill">
+                <input type="checkbox" id="autoSize" checked />
+                Auto size
+              </label>
+              <div>
+                <label class="small" for="gridSize">Grid size (12–22)</label>
+                <input type="number" id="gridSize" value="16" min="12" max="22" />
+              </div>
+            </div>
+
+            <div class="row">
+              <button id="btnApply" class="btn-secondary">Save & Regenerate</button>
+              <button id="btnShare" class="btn">Share Link 🔗</button>
+              <button id="btnReset" class="btn-ghost">Reset Progress</button>
+            </div>
+          </div>
+        </details>
+      </section>
+    </div>
+
+    <footer>Made with 💖 + ☀️ + 🌊 — all in your browser.</footer>
+  </div>
+
+  <!-- Win ribbon -->
+  <div class="ribbon" id="win">
+    <div class="inner">
+      <h3>We found them all! 💘</h3>
+      <p id="winMsg">You’re my favorite adventure.</p>
+      <button id="btnCloseWin">Aww 🥹</button>
+    </div>
+  </div>
+
+  <script>
+    /* --------------------------
+       Default Words (your list)
+       Format: "Display | Clue"
+    ---------------------------*/
+    const DEFAULT_LINES = `Deetjens | Our cozy Big Sur inn.
+Solvang | Danish town where we wandered.
+Landsby | Our hotel in Solvang.
+Kimpton | Santa Barbara hotel stay.
+Honor Bar | Montecito spot for bites and drinks.
+Donna | The orangutan we met.
+Troll Hole | Found on a hike and in a Solvang crystal shop.
+Highway 154 | Road we took instead of 101.
+Smoky the Bear | Forest fire prevention mascot we saw.
+Pearl Jam | Band we blasted near Ventura.
+Malibu | Coffee stop on the coast.
+Art Bell | Late-night radio voice on the road.
+Chinatown | Where we strolled in SF.
+SLO | Dive-bar drink stop.
+Mill City | Where deer surprised us by the bay.`.trim();
+
+    /* --------------------------
+       Helpers
+    ---------------------------*/
+    const $ = sel => document.querySelector(sel);
+    const $$ = sel => Array.from(document.querySelectorAll(sel));
+
+    const encodeData = (obj) => {
+      try{
+        return btoa(unescape(encodeURIComponent(JSON.stringify(obj))));
+      }catch(e){ return ""; }
+    };
+    const decodeData = (str) => {
+      try{
+        return JSON.parse(decodeURIComponent(escape(atob(str))));
+      }catch(e){ return null; }
+    };
+
+    const sanitize = (s) => (s||"").toUpperCase().replace(/[^A-Z0-9]/g,""); // keep digits
+    const rand = (n) => Math.floor(Math.random()*n);
+    const choice = (arr) => arr[rand(arr.length)];
+
+    // Slightly vowel‑friendly pool with “beachy” letters showing up often
+    const FILLER_POOL = "AAAAAAAABBBBBCCCDDDEEEEEEEEEEEFFFGGGHHHHIIIIIIIJKKKLLLLLMMMNNNNNNOOOOOOOPPRRRRRSSSSSTTTTTTUUUVVWWXYYZBEACHWAVESLOVEGOLDENSUNSEA";
+
+    function autoSize(words){
+      const longest = Math.max(...words.map(w => w.word.length));
+      const sum = words.reduce((a,w) => a + w.word.length, 0);
+      // heuristic
+      let s = Math.max(longest + 2, Math.ceil(Math.sqrt(sum) * 1.35));
+      s = Math.max(12, Math.min(22, s));
+      return s;
+    }
+
+    /* --------------------------
+       Generator
+    ---------------------------*/
+    function buildWordObjects(lines){
+      const out = [];
+      lines.split(/\n/).map(l => l.trim()).filter(Boolean).forEach(line=>{
+        const [display, ...clueParts] = line.split("|");
+        const disp = (display||"").trim();
+        const clue = (clueParts.join("|")||"").trim();
+        const word = sanitize(disp);
+        if(word.length >= 3){
+          out.push({ display: disp, word, clue: clue || disp });
+        }
+      });
+      return out;
+    }
+
+    function randomStart(dr, dc, len, size){
+      let minR = 0, maxR = size-1, minC = 0, maxC = size-1;
+      if(dr < 0) minR = len-1;
+      if(dr > 0) maxR = size - len;
+      if(dc < 0) minC = len-1;
+      if(dc > 0) maxC = size - len;
+      return { r: minR + rand(maxR - minR + 1), c: minC + rand(maxC - minC + 1) };
+    }
+
+    function tryPlace(grid, word, allowDiagonals){
+      const size = grid.length;
+      const dirs = allowDiagonals
+        ? [[0,1],[1,0],[0,-1],[-1,0],[1,1],[-1,-1],[1,-1],[-1,1]]
+        : [[0,1],[1,0],[0,-1],[-1,0]];
+
+      const len = word.word.length;
+      const attempts = 500;
+      for(let a=0;a<attempts;a++){
+        const reversed = Math.random() < 0.5;
+        const letters = (reversed ? [...word.word].reverse() : [...word.word]);
+        const [dr,dc] = choice(dirs);
+        const start = randomStart(dr,dc,len,size);
+
+        // check
+        let ok = true;
+        let cells = [];
+        for(let i=0;i<len;i++){
+          const r = start.r + dr * i;
+          const c = start.c + dc * i;
+          const cell = grid[r][c];
+          const ch = letters[i];
+          if(cell && cell !== ch){ ok = false; break; }
+          cells.push({r,c});
+        }
+        if(!ok) continue;
+
+        // place
+        for(let i=0;i<len;i++){
+          const r = cells[i].r, c = cells[i].c;
+          grid[r][c] = letters[i];
+        }
+        return { ...word, cells, reversed };
+      }
+      return null;
+    }
+
+    function generate(words, size, allowDiagonals){
+      // initialize grid
+      const grid = Array.from({length:size},()=>Array(size).fill(""));
+      const placements = [];
+      // place longest first for better fit
+      const sorted = [...words].sort((a,b)=>b.word.length - a.word.length);
+      for(const w of sorted){
+        const placed = tryPlace(grid, w, allowDiagonals);
+        if(!placed){
+          // if it cannot place, return null so caller can retry with bigger grid
+          return null;
+        }
+        placements.push(placed);
+      }
+      // fill empties
+      for(let r=0;r<size;r++){
+        for(let c=0;c<size;c++){
+          if(!grid[r][c]){
+            grid[r][c] = choice(FILLER_POOL).toUpperCase()[0];
+          }
+        }
+      }
+      return { grid, placements, size };
+    }
+
+    /* --------------------------
+       UI Rendering
+    ---------------------------*/
+    const gridEl = $("#grid");
+    const cluesEl = $("#clues");
+    const foundCountEl = $("#foundCount");
+    const totalCountEl = $("#totalCount");
+    const dedicationEl = $("#dedication");
+    const btnReveal = $("#btnReveal");
+    const btnRegenerate = $("#btnRegenerate");
+    const btnApply = $("#btnApply");
+    const btnShare = $("#btnShare");
+    const btnReset = $("#btnReset");
+    const diagonalsEl = $("#diagonals");
+    const autoSizeEl = $("#autoSize");
+    const gridSizeEl = $("#gridSize");
+    const linesEl = $("#lines");
+    const ribbon = $("#win");
+    const btnCloseWin = $("#btnCloseWin");
+    const winMsg = $("#winMsg");
+
+    let STATE = {
+      words: [],
+      placements: [],
+      grid: [],
+      size: 16,
+      allowDiagonals: true,
+      found: new Set(),
+      selecting: false,
+      startCell: null,
+      currentPath: [],
+    };
+
+    function renderGrid(){
+      gridEl.style.setProperty("--size", STATE.size);
+      gridEl.innerHTML = "";
+      const frag = document.createDocumentFragment();
+      for(let r=0;r<STATE.size;r++){
+        for(let c=0;c<STATE.size;c++){
+          const div = document.createElement("div");
+          div.className = "cell";
+          div.textContent = STATE.grid[r][c];
+          div.dataset.r = r; div.dataset.c = c;
+          frag.appendChild(div);
+        }
+      }
+      gridEl.appendChild(frag);
+    }
+
+    function renderClues(){
+      cluesEl.innerHTML = "";
+      const frag = document.createDocumentFragment();
+      STATE.placements.forEach((p, idx)=>{
+        const li = document.createElement("li");
+        li.dataset.idx = idx;
+        const status = document.createElement("div");
+        status.className = "status";
+        status.textContent = "♡";
+        const wrap = document.createElement("div");
+        wrap.className = "clue-text";
+        wrap.innerHTML = `<div>${escapeHtml(p.clue || p.display)}</div>
+                          <div class="clue-word">${escapeHtml(p.display)}</div>`;
+        li.appendChild(status);
+        li.appendChild(wrap);
+        cluesEl.appendChild(li);
+      });
+      updateFoundUI();
+    }
+
+    function updateFoundUI(){
+      foundCountEl.textContent = STATE.found.size;
+      totalCountEl.textContent = STATE.placements.length;
+      STATE.placements.forEach((p, idx)=>{
+        const li = cluesEl.querySelector(`li[data-idx="${idx}"]`);
+        if(!li) return;
+        const found = STATE.found.has(idx);
+        li.classList.toggle("found", found);
+        const status = li.querySelector(".status");
+        status.textContent = found ? "✓" : "♡";
+      });
+      // shade cells that are part of found words
+      const cellNodes = $$(".cell");
+      cellNodes.forEach(n=> n.classList.remove("found"));
+      STATE.found.forEach(idx=>{
+        const cells = STATE.placements[idx].cells;
+        cells.forEach(({r,c})=>{
+          const n = gridEl.children[r*STATE.size + c];
+          if(n) n.classList.add("found");
+        });
+      });
+      if(STATE.found.size === STATE.placements.length){
+        celebrate();
+      }
+    }
+
+    function escapeHtml(s){
+      return (s||"").replace(/[&<>"']/g, m=>({ "&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;" }[m]));
+    }
+
+    /* --------------------------
+       Selection / Interaction
+    ---------------------------*/
+    function getCellFromPoint(x,y){
+      const rect = gridEl.getBoundingClientRect();
+      const size = STATE.size;
+      const cellSize = rect.width / size;
+      const c = Math.floor((x - rect.left) / cellSize);
+      const r = Math.floor((y - rect.top) / cellSize);
+      if(r<0||c<0||r>=size||c>=size) return null;
+      return {r,c};
+    }
+
+    function pathBetween(a,b){
+      if(!a||!b) return [];
+      let dr = b.r - a.r;
+      let dc = b.c - a.c;
+      let stepR = Math.sign(dr);
+      let stepC = Math.sign(dc);
+      const absR = Math.abs(dr);
+      const absC = Math.abs(dc);
+
+      // constrain to 8 directions
+      if(absR === absC && absR !== 0){
+        // perfect diagonal
+      }else if(absR > absC){
+        stepC = 0;
+      }else if(absC > absR){
+        stepR = 0;
+      }
+
+      const len = Math.max(absR, absC) + 1;
+      const cells = [];
+      for(let i=0;i<len;i++){
+        const r = a.r + stepR * i;
+        const c = a.c + stepC * i;
+        if(r<0||c<0||r>=STATE.size||c>=STATE.size) break;
+        cells.push({r,c});
+      }
+      return cells;
+    }
+
+    function clearSelecting(){
+      STATE.selecting = false;
+      STATE.startCell = null;
+      STATE.currentPath = [];
+      $$(".cell").forEach(n=> n.classList.remove("selecting"));
+    }
+
+    function tryMatchPath(path){
+      // Compare against placements in forward or reverse
+      const eq = (A,B) => A.length===B.length && A.every((p,i)=> p.r===B[i].r && p.c===B[i].c);
+      const rev = (arr)=> [...arr].reverse();
+      for(let i=0;i<STATE.placements.length;i++){
+        const cells = STATE.placements[i].cells;
+        if(eq(path,cells) || eq(path,rev(cells))){
+          STATE.found.add(i);
+          updateFoundUI();
+          return true;
+        }
+      }
+      return false;
+    }
+
+    gridEl.addEventListener("pointerdown", (e)=>{
+      const cell = getCellFromPoint(e.clientX, e.clientY);
+      if(!cell) return;
+      STATE.selecting = true;
+      STATE.startCell = cell;
+      STATE.currentPath = [cell];
+      gridEl.setPointerCapture(e.pointerId);
+      const n = gridEl.children[cell.r*STATE.size + cell.c];
+      if(n) n.classList.add("selecting");
+    });
+    gridEl.addEventListener("pointermove", (e)=>{
+      if(!STATE.selecting) return;
+      const cell = getCellFromPoint(e.clientX, e.clientY);
+      if(!cell) return;
+      const path = pathBetween(STATE.startCell, cell);
+      // visual
+      $$(".cell").forEach(n=> n.classList.remove("selecting"));
+      path.forEach(({r,c})=>{
+        const n = gridEl.children[r*STATE.size + c];
+        if(n) n.classList.add("selecting");
+      });
+      STATE.currentPath = path;
+    });
+    gridEl.addEventListener("pointerup", ()=>{
+      if(!STATE.selecting) return;
+      const matched = tryMatchPath(STATE.currentPath);
+      // remove selection highlight either way
+      clearSelecting();
+      // tiny hint wiggle if no match (optional)
+      if(!matched){
+        // no-op; visuals already cleared
+      }
+    });
+
+    /* --------------------------
+       Orchestration
+    ---------------------------*/
+    function regenerate(withRetry=true){
+      // size logic
+      let size = parseInt(gridSizeEl.value, 10);
+      const allowDiagonals = diagonalsEl.checked;
+      const words = STATE.words;
+
+      if($("#autoSize").checked){
+        size = autoSize(words);
+        gridSizeEl.value = size;
+      }
+      // attempt to generate; if fails, grow size slightly and retry
+      let attempt = 0;
+      let out = null;
+      while(attempt < 6){
+        out = generate(words, size + attempt, allowDiagonals);
+        if(out) break;
+        attempt++;
+      }
+      if(!out){
+        alert("Couldn't fit all words. Try increasing the grid size or disabling diagonals.");
+        return;
+      }
+      STATE.grid = out.grid;
+      STATE.placements = out.placements;
+      STATE.size = out.size;
+      STATE.allowDiagonals = allowDiagonals;
+      STATE.found = new Set();
+
+      renderGrid();
+      renderClues();
+      saveLocal();
+      sprinkleHearts(10); // cute pulse
+    }
+
+    function revealAll(){
+      STATE.found = new Set(STATE.placements.map((_,i)=>i));
+      updateFoundUI();
+    }
+
+    function resetProgress(){
+      STATE.found = new Set();
+      updateFoundUI();
+    }
+
+    function celebrate(){
+      winMsg.textContent = (dedicationEl.value || "You’re my favorite adventure 💕");
+      $("#win").classList.add("show");
+      sprinkleHearts(22, true);
+    }
+
+    btnCloseWin.addEventListener("click", ()=> $("#win").classList.remove("show"));
+    btnReveal.addEventListener("click", revealAll);
+    btnRegenerate.addEventListener("click", ()=>regenerate(true));
+    btnApply.addEventListener("click", ()=>{
+      const words = buildWordObjects(linesEl.value);
+      if(words.length === 0) return alert("Please add at least one valid word (3+ characters).");
+      STATE.words = words;
+      regenerate(true);
+    });
+    btnShare.addEventListener("click", ()=>{
+      const payload = {
+        t: $("#pageTitle").textContent,
+        d: dedicationEl.value || "",
+        lines: linesEl.value.trim(),
+        diag: diagonalsEl.checked,
+        auto: autoSizeEl.checked,
+        size: parseInt(gridSizeEl.value,10) || 16
+      };
+      const hash = "#d=" + encodeData(payload);
+      const url = location.origin + location.pathname + hash;
+      navigator.clipboard?.writeText(url).then(()=>{
+        alert("Link copied! It includes your words, dedication, and settings.");
+      }, ()=>{
+        prompt("Copy your share link:", url);
+      });
+    });
+    btnReset.addEventListener("click", resetProgress);
+    dedicationEl.addEventListener("input", ()=> saveLocal());
+
+    function loadFromHash(){
+      const h = location.hash || "";
+      const m = h.match(/#d=([^&]+)/);
+      if(!m) return null;
+      const data = decodeData(m[1]);
+      if(!data) return null;
+      if(data.t) $("#pageTitle").textContent = data.t;
+      dedicationEl.value = data.d || "";
+      linesEl.value = (data.lines || DEFAULT_LINES).trim();
+      diagonalsEl.checked = !!data.diag;
+      autoSizeEl.checked = !!data.auto;
+      gridSizeEl.value = data.size || 16;
+      return true;
+    }
+
+    function saveLocal(){
+      const payload = {
+        title: $("#pageTitle").textContent,
+        dedication: dedicationEl.value || "",
+        lines: linesEl.value.trim(),
+        diag: diagonalsEl.checked,
+        auto: autoSizeEl.checked,
+        size: parseInt(gridSizeEl.value,10) || 16,
+        found: Array.from(STATE.found)
+      };
+      try{ localStorage.setItem("ws-love-save", JSON.stringify(payload)); }catch(e){}
+    }
+    function loadLocal(){
+      try{
+        const raw = localStorage.getItem("ws-love-save");
+        if(!raw) return false;
+        const data = JSON.parse(raw);
+        $("#pageTitle").textContent = data.title || $("#pageTitle").textContent;
+        dedicationEl.value = data.dedication || "";
+        linesEl.value = (data.lines || DEFAULT_LINES).trim();
+        diagonalsEl.checked = !!data.diag;
+        autoSizeEl.checked = !!data.auto;
+        gridSizeEl.value = data.size || 16;
+        return true;
+      }catch(e){ return false; }
+    }
+
+    /* --------------------------
+       Cute background hearts
+    ---------------------------*/
+    function sprinkleHearts(n=12, faster=false){
+      const box = $("#bgHearts");
+      for(let i=0;i<n;i++){
+        const s = document.createElement("span");
+        s.textContent = Math.random()<0.2 ? "♡" : "❤";
+        const left = Math.random()*100;
+        const delay = Math.random()* (faster? 2.5 : 6);
+        const dur = 5 + Math.random()* (faster? 4 : 10);
+        s.style.left = left+"vw";
+        s.style.setProperty("--shift", (Math.random()*40-20)+"vw");
+        s.style.animationDuration = dur+"s";
+        s.style.animationDelay = delay+"s";
+        box.appendChild(s);
+        setTimeout(()=> s.remove(), (delay+dur)*1000 + 200);
+      }
+    }
+    setInterval(()=> sprinkleHearts(rand(2)+1), 1600);
+
+    /* --------------------------
+       Boot
+    ---------------------------*/
+    function start(){
+      // init editor area from hash/local/default
+      const okHash = loadFromHash();
+      if(!okHash){
+        const okLocal = loadLocal();
+        if(!okLocal){
+          linesEl.value = DEFAULT_LINES;
+        }
+      }
+      // words from editor
+      STATE.words = buildWordObjects(linesEl.value);
+      regenerate(true);
+    }
+    document.addEventListener("DOMContentLoaded", start);
+  </script>
+</body>
+</html>
