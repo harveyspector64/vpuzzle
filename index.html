@@ -4,37 +4,27 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <meta name="theme-color" content="#ffd9e6" />
-  <title>Our California Road‑Trip Love Word Search</title>
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <title>Our California Word Search</title>
 
-  <!-- Cute, beachy fonts -->
+  <!-- Beachy, cute fonts -->
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
 
   <style>
     :root{
-      /* Palette: pastel sunset → ocean */
-      --sky-top: #ffe6ef;
-      --sky-mid: #ffd9c8;
-      --sunset: #ffd1dc;
-      --ocean: #c6f0ff;
-      --sea: #9dd9ff;
-      --ink: #233142;
-      --rose: #ff8fb1;
-      --heart: #ff5f9e;
-      --mint: #e6fff5;
-      --sand: #fff6e6;
-      --lav:  #efe3ff;
-      --grid-bg: #ffffffcc;
-      --grid-cell: #ffffff;
-      --grid-border: #f4e7ff;
-      --found: #ffd9e6;
-      --accent: #ff7aa2;
-      --accent-2: #78c5ff;
-      --ok: #1f9d7a;
-      --warn: #e97777;
+      /* Pastel sunset → ocean */
+      --sky-top:#ffe6ef; --sky-mid:#ffd9c8; --sunset:#ffd1dc;
+      --ocean:#c6f0ff;  --sea:#9dd9ff;
+      --ink:#233142;    --heart:#ff5f9e; --rose:#ff8fb1;
+      --grid-bg:#ffffffcc; --grid-cell:#fff; --grid-border:#f4e7ff;
+      --found:#ffd9e6;  --accent:#ff7aa2; --accent-2:#78c5ff;
+      --ok:#1f9d7a;
+      --safe-top: env(safe-area-inset-top, 0px);
+      --safe-bottom: env(safe-area-inset-bottom, 0px);
     }
-
     *{box-sizing:border-box}
+    html,body{height:100%}
     body{
       margin:0;
       color:var(--ink);
@@ -42,193 +32,116 @@
       background:
         linear-gradient(180deg,var(--sky-top) 0%, var(--sky-mid) 30%, var(--sunset) 50%, var(--ocean) 70%, var(--sea) 100%);
       min-height:100svh;
-      overflow-x:hidden;
+      padding-bottom: var(--safe-bottom);
+      -webkit-tap-highlight-color: transparent;
+      overscroll-behavior-y: contain;
     }
 
-    /* Floating hearts background */
-    .hearts{
-      position:fixed; inset:0; pointer-events:none; overflow:hidden; z-index:0;
-    }
+    /* Floating hearts */
+    .hearts{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:0}
     .hearts span{
-      position:absolute;
-      bottom:-2rem;
-      font-size:clamp(18px,2.5vw,26px);
-      color:var(--heart);
-      opacity:.25;
+      position:absolute;bottom:-2rem;opacity:.22;color:var(--heart);
+      font-size:clamp(18px,2.8vw,28px);
       animation:floatUp linear forwards;
     }
     @keyframes floatUp{
-      0%{transform:translateY(0) translateX(0) rotate(0deg); opacity:.15}
-      100%{transform:translateY(-120vh) translateX(var(--shift)) rotate(25deg); opacity:0}
+      0%{transform:translateY(0) translateX(0) rotate(0);opacity:.14}
+      100%{transform:translateY(-120vh) translateX(var(--shift)) rotate(18deg);opacity:0}
     }
 
-    .wrap{
-      position:relative; z-index:1;
-      max-width:1000px; margin:0 auto; padding:22px 16px 32px;
-    }
-
+    .wrap{position:relative;z-index:1;max-width:980px;margin:0 auto;padding:calc(10px + var(--safe-top)) 14px 18px}
     header{
-      display:flex; align-items:center; gap:12px; flex-wrap:wrap; justify-content:space-between;
-      margin-bottom:12px;
+      display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:8px
     }
-    .title{
-      display:flex; align-items:center; gap:12px; flex-wrap:wrap;
-    }
+    .title{display:flex;align-items:center;gap:10px}
     .logo{
-      width:48px; height:48px; border-radius:50%;
-      display:grid; place-items:center; background:radial-gradient(circle at 40% 40%, #fff 0 35%, #ffd1dc 36% 100%);
+      width:50px;height:50px;border-radius:50%;display:grid;place-items:center;
+      background:radial-gradient(circle at 40% 40%, #fff 0 38%, #ffd1dc 39% 100%);
       box-shadow:0 6px 14px rgba(0,0,0,.08), inset 0 0 0 2px #fff7;
-      font-family:"Pacifico",cursive; color:var(--heart);
+      font-family:"Pacifico",cursive;color:var(--heart); user-select:none
     }
     h1{
-      font-family:"Pacifico",cursive; font-weight:400; font-size:clamp(22px,5.4vw,36px);
-      margin:0; letter-spacing:.4px; color:#c74173; text-shadow:0 2px 0 #fff8;
+      font-family:"Pacifico",cursive;font-weight:400;margin:0;
+      font-size:clamp(22px,5.2vw,36px);letter-spacing:.3px;color:#c74173;text-shadow:0 2px 0 #fff8
     }
-    .subtitle{
-      margin:0; font-size:13px; opacity:.8
-    }
+    .subtitle{margin:2px 0 0;font-size:13px;opacity:.8}
 
-    .controls{
-      display:flex; gap:8px; flex-wrap:wrap;
-    }
-    button, .btn{
-      border:0; padding:10px 14px; border-radius:12px;
+    .controls{display:flex;gap:8px;flex-wrap:wrap}
+    button{
+      border:0;padding:12px 14px;border-radius:12px;cursor:pointer;font-weight:600;
       background:linear-gradient(180deg,#fff,#ffeef6);
       box-shadow:0 2px 0 #ffb7ce88, 0 6px 16px rgba(0,0,0,.08);
-      color:#c13b73; font-weight:600; cursor:pointer;
-      transition:transform .05s ease, filter .2s ease;
+      color:#c13b73; transition:transform .05s ease, filter .18s ease
     }
     button:hover{filter:brightness(1.03)}
     button:active{transform:translateY(1px)}
-    .btn-secondary{ background:linear-gradient(180deg,#fff,#eef7ff); color:#1b6aa6; box-shadow:0 2px 0 #a6d5ff88, 0 6px 16px rgba(0,0,0,.08);}
-    .btn-ghost{ background:transparent; box-shadow:none; border:2px dashed #ffffff88; color:#2a5b8a }
-
-    .deck{
-      display:grid; gap:16px;
-      grid-template-columns:1fr;
-    }
-    @media (min-width:900px){
-      .deck{ grid-template-columns: minmax(0,1.15fr) minmax(0,.85fr); }
-    }
+    .btn-secondary{background:linear-gradient(180deg,#fff,#eef7ff);color:#1b6aa6;box-shadow:0 2px 0 #a6d5ff88,0 6px 16px rgba(0,0,0,.08)}
+    .btn-ghost{background:transparent;border:2px dashed #ffffff88;box-shadow:none;color:#2a5b8a}
+    .deck{display:grid;gap:14px;grid-template-columns:1fr}
+    @media (min-width:900px){ .deck{grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr)} }
 
     .card{
       background:linear-gradient(180deg,var(--grid-bg),#fff);
-      border-radius:18px;
-      padding:14px;
+      border-radius:18px;padding:14px;
       box-shadow:0 10px 26px rgba(0,0,0,.10), inset 0 0 0 1px #fff6;
     }
+    .pill{display:flex;align-items:center;gap:8px;flex-wrap:wrap;
+      padding:10px 12px;border-radius:12px;background:linear-gradient(180deg,#fff,#fff7);
+      box-shadow:inset 0 0 0 1px #f0eaff;font-size:14px}
+    .progress{font-size:13px;opacity:.9}
 
     /* Grid */
-    .grid-wrap{
-      display:grid; place-items:center;
-    }
+    .grid-wrap{display:grid;place-items:center}
     .grid{
-      --size: 16;
-      width:min(92vw, 680px);
-      aspect-ratio:1/1;
-      display:grid;
-      grid-template-columns: repeat(var(--size), 1fr);
-      grid-auto-rows: 1fr;
-      gap:2px;
+      --size:16;
+      width:min(94vw,680px);aspect-ratio:1/1;display:grid;
+      grid-template-columns:repeat(var(--size),1fr);grid-auto-rows:1fr;gap:2px;
       background:linear-gradient(180deg,#fff8,#fff1);
-      border-radius:16px; padding:8px;
-      box-shadow: inset 0 0 0 1px var(--grid-border), 0 6px 22px rgba(0,0,0,.07);
-      touch-action:none; /* enables smooth pointer interaction on mobile */
-      user-select:none;
+      border-radius:16px;padding:8px;
+      box-shadow:inset 0 0 0 1px var(--grid-border), 0 6px 22px rgba(0,0,0,.07);
+      touch-action:none;user-select:none
     }
     .cell{
-      display:grid; place-items:center; font-weight:600;
-      background:var(--grid-cell);
-      border-radius:10px;
-      box-shadow:inset 0 0 0 1px #f3e7ff;
-      font-size:clamp(14px, 2.5vw, 22px);
-      letter-spacing:.5px;
+      display:grid;place-items:center;font-weight:600;background:var(--grid-cell);
+      border-radius:10px;box-shadow:inset 0 0 0 1px #f3e7ff;
+      font-size:clamp(14px,2.6vw,22px);letter-spacing:.5px;
       transition:background .08s ease, color .08s ease, transform .06s ease;
     }
-    .cell.selecting{ background:#fff4fa; }
-    .cell.found{ background:var(--found); color:#b22762; box-shadow:inset 0 0 0 2px #ffc3da; }
-    .cell.hint{ outline:2px dashed #ffc1db; }
+    .cell.selecting{background:#fff4fa}
+    .cell.found{background:var(--found);color:#b22762;box-shadow:inset 0 0 0 2px #ffc3da}
+    .cell.hint{outline:2px dashed #ffc1db}
 
-    .panel{
-      display:flex; flex-direction:column; gap:12px;
-    }
-
-    .pill{
-      display:flex; align-items:center; gap:8px; flex-wrap:wrap;
-      padding:10px 12px; border-radius:12px; background:linear-gradient(180deg,#fff,#fff7);
-      box-shadow:inset 0 0 0 1px #f0eaff;
-      font-size:14px;
-    }
-    .pill label{opacity:.8}
-
-    .clues{
-      margin:0; padding:0; list-style:none; display:flex; flex-direction:column; gap:8px;
-      max-height:min(54vh,480px); overflow:auto;
-    }
+    /* Clues */
+    .clues{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:8px;
+      max-height:min(56vh,500px);overflow:auto;-webkit-overflow-scrolling:touch}
     .clues li{
-      background:linear-gradient(180deg,#fff,#fff8);
-      border-radius:12px; padding:10px 12px;
-      box-shadow:inset 0 0 0 1px #f1e9ff;
-      display:flex; align-items:flex-start; gap:10px;
+      background:linear-gradient(180deg,#fff,#fff8);border-radius:12px;padding:10px 12px;
+      box-shadow:inset 0 0 0 1px #f1e9ff;display:flex;gap:10px;align-items:flex-start
     }
-    .clues .status{
-      width:22px; height:22px; border-radius:50%; display:grid; place-items:center;
-      font-size:14px; flex:0 0 22px;
-      background:#ffe8f1; color:#c13b73; border:1px solid #ffd2e2;
-    }
-    .clues li.found .status{ background:#eafff5; color:var(--ok); border-color:#b9f1de }
-    .clue-text{ font-size:14px; line-height:1.35 }
-    .clue-word{ opacity:.6; font-size:12px }
+    .clues .status{width:22px;height:22px;border-radius:50%;display:grid;place-items:center;
+      font-size:14px;flex:0 0 22px;background:#ffe8f1;color:#c13b73;border:1px solid #ffd2e2}
+    .clues li.found .status{background:#eafff5;color:var(--ok);border-color:#b9f1de}
+    .clue-text{font-size:14px;line-height:1.35}
+    .clue-answer{opacity:.6;font-size:12px;margin-top:2px;display:none}
+    .show-answers .clue-answer{display:block}
 
-    details{
-      border-radius:14px; background:linear-gradient(180deg,#ffffff,#fff7);
-      box-shadow:inset 0 0 0 1px #f0eaff;
-      padding:10px 12px;
-    }
-    details > summary{
-      list-style:none; cursor:pointer; font-weight:600; color:#1b6aa6;
-      display:flex; align-items:center; gap:8px;
-    }
-    details[open]{ box-shadow:inset 0 0 0 1px #d6ecff, 0 8px 24px rgba(0,0,0,.06); }
-
-    .editor{
-      display:grid; gap:10px; margin-top:8px;
-    }
-    .editor textarea{
-      width:100%; min-height:160px; resize:vertical;
-      border:1px solid #e6dfff; border-radius:12px; padding:10px 12px;
-      background:#fff; font: 13px/1.4 "Poppins",sans-serif;
-    }
-    .row{
-      display:flex; gap:10px; flex-wrap:wrap;
-    }
-    .row > *{ flex:1 1 150px }
-    input[type="text"], input[type="number"]{
-      width:100%; border:1px solid #e6dfff; border-radius:12px; padding:10px 12px; background:#fff;
-      font: 14px/1.2 "Poppins",sans-serif;
-    }
-    input[type="checkbox"]{ transform: translateY(1px) }
-    .small{font-size:12px; opacity:.7}
-    .progress{ font-size:13px; opacity:.85 }
+    /* Editor hidden unless builder mode */
+    #editorBox{display:none}
+    body.builder #editorBox{display:block}
 
     /* Win ribbon */
-    .ribbon{
-      position:fixed; inset:0; display:none; place-items:center; z-index:3;
-      backdrop-filter: blur(3px);
-    }
-    .ribbon.show{ display:grid; }
+    .ribbon{position:fixed;inset:0;display:none;place-items:center;z-index:3;backdrop-filter:blur(3px)}
+    .ribbon.show{display:grid}
     .ribbon .inner{
-      background:linear-gradient(180deg,#fff,#fff5f9);
-      border-radius:18px; padding:20px 18px; text-align:center;
+      background:linear-gradient(180deg,#fff,#fff5f9);border-radius:18px;padding:20px 18px;text-align:center;
       box-shadow:0 18px 40px rgba(0,0,0,.12), inset 0 0 0 1px #ffd6e6;
-      max-width:min(92vw, 420px);
-      animation:pop .18s ease;
+      max-width:min(92vw,420px);animation:pop .18s ease
     }
-    @keyframes pop{ from{ transform:scale(.97); opacity:.6 } to{ transform:scale(1); opacity:1 } }
-    .inner h3{ font-family:"Pacifico"; font-weight:400; margin:0 0 8px; color:#c13b73 }
-    .inner p{ margin:0 0 12px; }
+    @keyframes pop{from{transform:scale(.97);opacity:.6}to{transform:scale(1);opacity:1}}
+    .inner h3{font-family:"Pacifico";font-weight:400;margin:0 0 8px;color:#c13b73}
+    .inner p{margin:0 0 12px}
 
-    footer{ margin-top:12px; text-align:center; font-size:12px; opacity:.7 }
+    footer{margin-top:8px;text-align:center;font-size:12px;opacity:.7}
   </style>
 </head>
 <body>
@@ -238,15 +151,16 @@
   <div class="wrap">
     <header>
       <div class="title">
-        <div class="logo">♥</div>
+        <div class="logo" id="logo">♥</div>
         <div>
-          <h1 id="pageTitle"> Road‑Trip Love Word Search</h1>
-          <p class="subtitle"> All our little memories 🌴</p>
+          <h1 id="pageTitle">Our California Word Search</h1>
+          <p class="subtitle">Beach Boys energy, pastel sunset, and all our little memories 🌴</p>
         </div>
       </div>
       <div class="controls">
-        <button id="btnRegenerate">Regenerate ✨</button>
-        <button class="btn-secondary" id="btnReveal">Reveal All</button>
+        <button id="btnRegenerate" title="Shuffle letters & placements">Regenerate ✨</button>
+        <button class="btn-secondary" id="btnHighlight" title="Toggle highlight for all answers">Highlight All</button>
+        <button class="btn-secondary" id="btnAnswers" title="Toggle showing the answer words next to clues">Show Answers</button>
       </div>
     </header>
 
@@ -255,46 +169,30 @@
       <section class="card grid-wrap">
         <div class="pill">
           <span class="progress"><strong id="foundCount">0</strong>/<span id="totalCount">0</span> found</span>
-          <span class="small">Tap & drag in straight lines (↔ ↕ ↘ ↙ ↗ ↖)</span>
+          <span style="font-size:12px;opacity:.8">Tap & drag in straight lines (→ ↓ ↘)</span>
         </div>
         <div class="grid" id="grid" aria-label="Word search grid"></div>
       </section>
 
-      <!-- Clues + Editor -->
+      <!-- Clues (no spoilers by default) -->
       <section class="card panel">
-        <div class="pill">
-          <label for="dedication">Dedication:</label>
-          <input id="dedication" type="text" placeholder="For you, sunshine ☀️" />
-        </div>
-
         <ul class="clues" id="clues"></ul>
 
+        <!-- Hidden builder for you only -->
         <details id="editorBox">
-          <summary>✏️ Edit Words</summary>
-          <div class="editor">
-            <p class="small">
+          <summary>✏️ Builder Mode (words & settings)</summary>
+          <div class="editor" style="display:grid;gap:10px;margin-top:8px">
+            <p style="font-size:12px;opacity:.75">
               Enter one per line: <code>Display Word | Clue</code>.  
-              Spaces & punctuation are removed for the grid (digits are okay).  
-              Example: <em>Highway 154 | Road we took instead of 101.</em>
+              Spaces & punctuation are removed for the grid; digits are allowed (but you asked to avoid them).
             </p>
-            <textarea id="lines"></textarea>
-
-            <div class="row">
-              <label class="pill">
-                <input type="checkbox" id="diagonals" checked />
-                Allow diagonals
-              </label>
-              <label class="pill">
-                <input type="checkbox" id="autoSize" checked />
-                Auto size
-              </label>
-              <div>
-                <label class="small" for="gridSize">Grid size (12–22)</label>
-                <input type="number" id="gridSize" value="16" min="12" max="22" />
-              </div>
+            <textarea id="lines" style="width:100%;min-height:170px;resize:vertical;border:1px solid #e6dfff;border-radius:12px;padding:10px 12px;background:#fff;font:13px/1.4 Poppins,sans-serif;"></textarea>
+            <div class="pill" style="display:flex;gap:12px;flex-wrap:wrap">
+              <label><input type="checkbox" id="diagonals" checked /> Allow diagonal (↘)</label>
+              <label><input type="checkbox" id="autoSize" checked /> Auto size</label>
+              <label>Grid size <input type="number" id="gridSize" value="16" min="12" max="22" style="width:82px;margin-left:6px"/></label>
             </div>
-
-            <div class="row">
+            <div style="display:flex;gap:10px;flex-wrap:wrap">
               <button id="btnApply" class="btn-secondary">Save & Regenerate</button>
               <button id="btnShare" class="btn">Share Link 🔗</button>
               <button id="btnReset" class="btn-ghost">Reset Progress</button>
@@ -319,7 +217,8 @@
   <script>
     /* --------------------------
        Default Words (your list)
-       Format: "Display | Clue"
+       Format per line: "Display | Clue"
+       NOTE: “Highway 154” → “One Five Four” (no digits in grid)
     ---------------------------*/
     const DEFAULT_LINES = `Deetjens | Our cozy Big Sur inn.
 Solvang | Danish town where we wandered.
@@ -328,7 +227,7 @@ Kimpton | Santa Barbara hotel stay.
 Honor Bar | Montecito spot for bites and drinks.
 Donna | The orangutan we met.
 Troll Hole | Found on a hike and in a Solvang crystal shop.
-Highway 154 | Road we took instead of 101.
+One Five Four | Road we took instead of 101.
 Smoky the Bear | Forest fire prevention mascot we saw.
 Pearl Jam | Band we blasted near Ventura.
 Malibu | Coffee stop on the coast.
@@ -338,146 +237,164 @@ SLO | Dive-bar drink stop.
 Mill City | Where deer surprised us by the bay.`.trim();
 
     /* --------------------------
-       Helpers
+       Utilities
     ---------------------------*/
-    const $ = sel => document.querySelector(sel);
-    const $$ = sel => Array.from(document.querySelectorAll(sel));
+    const $ = s => document.querySelector(s);
+    const $$ = s => Array.from(document.querySelectorAll(s));
+    const sanitize = s => (s||"").toUpperCase().replace(/[^A-Z0-9]/g,""); // digits allowed but your list avoids them now
+    const rand = n => Math.floor(Math.random()*n);
+    const choice = arr => arr[rand(arr.length)];
+    const encodeData = obj => { try{ return btoa(unescape(encodeURIComponent(JSON.stringify(obj)))) }catch(e){ return "" } };
+    const decodeData = str => { try{ return JSON.parse(decodeURIComponent(escape(atob(str)))) }catch(e){ return null } };
 
-    const encodeData = (obj) => {
-      try{
-        return btoa(unescape(encodeURIComponent(JSON.stringify(obj))));
-      }catch(e){ return ""; }
-    };
-    const decodeData = (str) => {
-      try{
-        return JSON.parse(decodeURIComponent(escape(atob(str))));
-      }catch(e){ return null; }
-    };
-
-    const sanitize = (s) => (s||"").toUpperCase().replace(/[^A-Z0-9]/g,""); // keep digits
-    const rand = (n) => Math.floor(Math.random()*n);
-    const choice = (arr) => arr[rand(arr.length)];
-
-    // Slightly vowel‑friendly pool with “beachy” letters showing up often
-    const FILLER_POOL = "AAAAAAAABBBBBCCCDDDEEEEEEEEEEEFFFGGGHHHHIIIIIIIJKKKLLLLLMMMNNNNNNOOOOOOOPPRRRRRSSSSSTTTTTTUUUVVWWXYYZBEACHWAVESLOVEGOLDENSUNSEA";
+    // vowel‑friendly filler with a beachy bias
+    const FILLER_POOL = "AAAAAAAABBBCCCDDDEEEEEEEEEEEFFFGGGHHHHIIIIIIIJKKKLLLLLMMMNNNNNNOOOOOOOPPRRRRRSSSSSTTTTTTUUUVVWWXYYZBEACHWAVESLOVEGOLDENSUNSEA";
 
     function autoSize(words){
       const longest = Math.max(...words.map(w => w.word.length));
-      const sum = words.reduce((a,w) => a + w.word.length, 0);
-      // heuristic
-      let s = Math.max(longest + 2, Math.ceil(Math.sqrt(sum) * 1.35));
-      s = Math.max(12, Math.min(22, s));
-      return s;
+      const sum = words.reduce((a,w)=> a + w.word.length, 0);
+      let s = Math.max(longest + 2, Math.ceil(Math.sqrt(sum) * 1.30));
+      return Math.max(12, Math.min(22, s));
     }
 
-    /* --------------------------
-       Generator
-    ---------------------------*/
     function buildWordObjects(lines){
       const out = [];
       lines.split(/\n/).map(l => l.trim()).filter(Boolean).forEach(line=>{
-        const [display, ...clueParts] = line.split("|");
+        const [display, ...rest] = line.split("|");
         const disp = (display||"").trim();
-        const clue = (clueParts.join("|")||"").trim();
+        const clue = (rest.join("|")||"").trim();
         const word = sanitize(disp);
-        if(word.length >= 3){
-          out.push({ display: disp, word, clue: clue || disp });
-        }
+        if(word.length >= 3){ out.push({ display: disp, word, clue: clue || disp }) }
       });
       return out;
     }
 
+    /* --------------------------
+       Generator
+       Only forward directions: → (0,1), ↓ (1,0), ↘ (1,1)
+       NO reversed placements.
+    ---------------------------*/
     function randomStart(dr, dc, len, size){
-      let minR = 0, maxR = size-1, minC = 0, maxC = size-1;
-      if(dr < 0) minR = len-1;
-      if(dr > 0) maxR = size - len;
-      if(dc < 0) minC = len-1;
-      if(dc > 0) maxC = size - len;
-      return { r: minR + rand(maxR - minR + 1), c: minC + rand(maxC - minC + 1) };
+      let minR=0, maxR=size-1, minC=0, maxC=size-1;
+      if(dr>0) maxR = size - len;
+      if(dc>0) maxC = size - len;
+      return { r: minR + rand(maxR-minR+1), c: minC + rand(maxC-minC+1) };
     }
 
-    function tryPlace(grid, word, allowDiagonals){
+    function tryPlace(grid, word, allowDiag){
       const size = grid.length;
-      const dirs = allowDiagonals
-        ? [[0,1],[1,0],[0,-1],[-1,0],[1,1],[-1,-1],[1,-1],[-1,1]]
-        : [[0,1],[1,0],[0,-1],[-1,0]];
-
+      const dirs = allowDiag ? [[0,1],[1,0],[1,1]] : [[0,1],[1,0]];
       const len = word.word.length;
-      const attempts = 500;
-      for(let a=0;a<attempts;a++){
-        const reversed = Math.random() < 0.5;
-        const letters = (reversed ? [...word.word].reverse() : [...word.word]);
+      for(let a=0;a<500;a++){
         const [dr,dc] = choice(dirs);
         const start = randomStart(dr,dc,len,size);
-
-        // check
-        let ok = true;
-        let cells = [];
+        let ok = true, cells=[];
         for(let i=0;i<len;i++){
-          const r = start.r + dr * i;
-          const c = start.c + dc * i;
-          const cell = grid[r][c];
-          const ch = letters[i];
-          if(cell && cell !== ch){ ok = false; break; }
+          const r = start.r + dr*i, c = start.c + dc*i;
+          const cell = grid[r][c], ch = word.word[i];
+          if(cell && cell !== ch){ ok=false; break; }
           cells.push({r,c});
         }
         if(!ok) continue;
-
         // place
         for(let i=0;i<len;i++){
-          const r = cells[i].r, c = cells[i].c;
-          grid[r][c] = letters[i];
+          const r=cells[i].r, c=cells[i].c;
+          grid[r][c] = word.word[i];
         }
-        return { ...word, cells, reversed };
+        return { ...word, cells };
       }
       return null;
     }
 
-    function generate(words, size, allowDiagonals){
-      // initialize grid
+    function generate(words, size, allowDiag){
       const grid = Array.from({length:size},()=>Array(size).fill(""));
       const placements = [];
-      // place longest first for better fit
-      const sorted = [...words].sort((a,b)=>b.word.length - a.word.length);
+      const sorted = [...words].sort((a,b)=> b.word.length - a.word.length);
       for(const w of sorted){
-        const placed = tryPlace(grid, w, allowDiagonals);
-        if(!placed){
-          // if it cannot place, return null so caller can retry with bigger grid
-          return null;
-        }
+        const placed = tryPlace(grid, w, allowDiag);
+        if(!placed) return null;
         placements.push(placed);
       }
-      // fill empties
+      // fill
       for(let r=0;r<size;r++){
         for(let c=0;c<size;c++){
-          if(!grid[r][c]){
-            grid[r][c] = choice(FILLER_POOL).toUpperCase()[0];
-          }
+          if(!grid[r][c]) grid[r][c] = choice(FILLER_POOL).toUpperCase()[0];
         }
       }
       return { grid, placements, size };
     }
 
     /* --------------------------
-       UI Rendering
+       Interaction
+       Path only valid if it matches →, ↓, or ↘
+    ---------------------------*/
+    function getCellFromPoint(x,y){
+      const rect = gridEl.getBoundingClientRect();
+      const size = STATE.size;
+      const cell = rect.width / size;
+      const c = Math.floor((x - rect.left) / cell);
+      const r = Math.floor((y - rect.top ) / cell);
+      if(r<0||c<0||r>=size||c>=size) return null;
+      return {r,c};
+    }
+
+    function pathBetween(a,b){
+      if(!a||!b) return [];
+      const dr = b.r - a.r, dc = b.c - a.c;
+      if(dr===0 && dc>=0){ // →
+        return Array.from({length:dc+1},(_,i)=>({r:a.r, c:a.c+i}));
+      }else if(dc===0 && dr>=0){ // ↓
+        return Array.from({length:dr+1},(_,i)=>({r:a.r+i, c:a.c}));
+      }else if(dr===dc && dr>=0){ // ↘
+        return Array.from({length:dr+1},(_,i)=>({r:a.r+i, c:a.c+i}));
+      }else{
+        return []; // invalid (blocks backwards and odd slants)
+      }
+    }
+
+    function tryMatchPath(path){
+      if(path.length<2) return false;
+      const eq = (A,B) => A.length===B.length && A.every((p,i)=> p.r===B[i].r && p.c===B[i].c);
+      for(let i=0;i<STATE.placements.length;i++){
+        const cells = STATE.placements[i].cells;
+        if(eq(path,cells)){
+          STATE.found.add(i);
+          updateFoundUI();
+          return true;
+        }
+      }
+      return false;
+    }
+
+    function clearSelecting(){
+      STATE.selecting=false; STATE.startCell=null; STATE.currentPath=[];
+      $$(".cell").forEach(n=> n.classList.remove("selecting"));
+    }
+
+    /* --------------------------
+       UI render
     ---------------------------*/
     const gridEl = $("#grid");
     const cluesEl = $("#clues");
     const foundCountEl = $("#foundCount");
     const totalCountEl = $("#totalCount");
-    const dedicationEl = $("#dedication");
-    const btnReveal = $("#btnReveal");
     const btnRegenerate = $("#btnRegenerate");
-    const btnApply = $("#btnApply");
-    const btnShare = $("#btnShare");
-    const btnReset = $("#btnReset");
+    const btnHighlight = $("#btnHighlight");
+    const btnAnswers = $("#btnAnswers");
+    const btnCloseWin = $("#btnCloseWin");
+    const ribbon = $("#win");
+    const winMsg = $("#winMsg");
+    const logo = $("#logo");
+
+    // Builder controls (hidden by default)
+    const editorBox = $("#editorBox");
+    const linesEl = $("#lines");
     const diagonalsEl = $("#diagonals");
     const autoSizeEl = $("#autoSize");
     const gridSizeEl = $("#gridSize");
-    const linesEl = $("#lines");
-    const ribbon = $("#win");
-    const btnCloseWin = $("#btnCloseWin");
-    const winMsg = $("#winMsg");
+    const btnApply = $("#btnApply");
+    const btnShare = $("#btnShare");
+    const btnReset = $("#btnReset");
 
     let STATE = {
       words: [],
@@ -486,9 +403,11 @@ Mill City | Where deer surprised us by the bay.`.trim();
       size: 16,
       allowDiagonals: true,
       found: new Set(),
-      selecting: false,
-      startCell: null,
-      currentPath: [],
+      selecting:false,
+      startCell:null,
+      currentPath:[],
+      answersShown:false,
+      highlightAll:false
     };
 
     function renderGrid(){
@@ -509,19 +428,22 @@ Mill City | Where deer surprised us by the bay.`.trim();
 
     function renderClues(){
       cluesEl.innerHTML = "";
-      const frag = document.createDocumentFragment();
+      if(STATE.answersShown){ cluesEl.classList.add("show-answers"); }
+      else { cluesEl.classList.remove("show-answers"); }
       STATE.placements.forEach((p, idx)=>{
         const li = document.createElement("li");
         li.dataset.idx = idx;
         const status = document.createElement("div");
-        status.className = "status";
-        status.textContent = "♡";
+        status.className = "status"; status.textContent = "♡";
         const wrap = document.createElement("div");
         wrap.className = "clue-text";
-        wrap.innerHTML = `<div>${escapeHtml(p.clue || p.display)}</div>
-                          <div class="clue-word">${escapeHtml(p.display)}</div>`;
+        const ans = document.createElement("div");
+        ans.className = "clue-answer";
+        wrap.textContent = p.clue || p.display;
+        ans.textContent = p.display;
         li.appendChild(status);
         li.appendChild(wrap);
+        li.appendChild(ans);
         cluesEl.appendChild(li);
       });
       updateFoundUI();
@@ -530,98 +452,38 @@ Mill City | Where deer surprised us by the bay.`.trim();
     function updateFoundUI(){
       foundCountEl.textContent = STATE.found.size;
       totalCountEl.textContent = STATE.placements.length;
+      // clue statuses
       STATE.placements.forEach((p, idx)=>{
         const li = cluesEl.querySelector(`li[data-idx="${idx}"]`);
         if(!li) return;
         const found = STATE.found.has(idx);
         li.classList.toggle("found", found);
-        const status = li.querySelector(".status");
-        status.textContent = found ? "✓" : "♡";
+        li.querySelector(".status").textContent = found ? "✓" : "♡";
       });
-      // shade cells that are part of found words
-      const cellNodes = $$(".cell");
-      cellNodes.forEach(n=> n.classList.remove("found"));
-      STATE.found.forEach(idx=>{
-        const cells = STATE.placements[idx].cells;
-        cells.forEach(({r,c})=>{
+      // grid highlight
+      $$(".cell").forEach(n=> n.classList.remove("found"));
+      const indices = STATE.highlightAll ? STATE.placements.map((_,i)=>i) : Array.from(STATE.found);
+      indices.forEach(idx=>{
+        STATE.placements[idx].cells.forEach(({r,c})=>{
           const n = gridEl.children[r*STATE.size + c];
           if(n) n.classList.add("found");
         });
       });
-      if(STATE.found.size === STATE.placements.length){
+      if(STATE.found.size === STATE.placements.length && !STATE.highlightAll){
         celebrate();
       }
     }
 
-    function escapeHtml(s){
-      return (s||"").replace(/[&<>"']/g, m=>({ "&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;" }[m]));
+    function celebrate(){
+      winMsg.textContent = "You’re my favorite adventure 💕";
+      ribbon.classList.add("show");
+      sprinkleHearts(24,true);
     }
 
     /* --------------------------
-       Selection / Interaction
+       Events
     ---------------------------*/
-    function getCellFromPoint(x,y){
-      const rect = gridEl.getBoundingClientRect();
-      const size = STATE.size;
-      const cellSize = rect.width / size;
-      const c = Math.floor((x - rect.left) / cellSize);
-      const r = Math.floor((y - rect.top) / cellSize);
-      if(r<0||c<0||r>=size||c>=size) return null;
-      return {r,c};
-    }
-
-    function pathBetween(a,b){
-      if(!a||!b) return [];
-      let dr = b.r - a.r;
-      let dc = b.c - a.c;
-      let stepR = Math.sign(dr);
-      let stepC = Math.sign(dc);
-      const absR = Math.abs(dr);
-      const absC = Math.abs(dc);
-
-      // constrain to 8 directions
-      if(absR === absC && absR !== 0){
-        // perfect diagonal
-      }else if(absR > absC){
-        stepC = 0;
-      }else if(absC > absR){
-        stepR = 0;
-      }
-
-      const len = Math.max(absR, absC) + 1;
-      const cells = [];
-      for(let i=0;i<len;i++){
-        const r = a.r + stepR * i;
-        const c = a.c + stepC * i;
-        if(r<0||c<0||r>=STATE.size||c>=STATE.size) break;
-        cells.push({r,c});
-      }
-      return cells;
-    }
-
-    function clearSelecting(){
-      STATE.selecting = false;
-      STATE.startCell = null;
-      STATE.currentPath = [];
-      $$(".cell").forEach(n=> n.classList.remove("selecting"));
-    }
-
-    function tryMatchPath(path){
-      // Compare against placements in forward or reverse
-      const eq = (A,B) => A.length===B.length && A.every((p,i)=> p.r===B[i].r && p.c===B[i].c);
-      const rev = (arr)=> [...arr].reverse();
-      for(let i=0;i<STATE.placements.length;i++){
-        const cells = STATE.placements[i].cells;
-        if(eq(path,cells) || eq(path,rev(cells))){
-          STATE.found.add(i);
-          updateFoundUI();
-          return true;
-        }
-      }
-      return false;
-    }
-
-    gridEl.addEventListener("pointerdown", (e)=>{
+    gridEl.addEventListener("pointerdown",(e)=>{
       const cell = getCellFromPoint(e.clientX, e.clientY);
       if(!cell) return;
       STATE.selecting = true;
@@ -631,12 +493,11 @@ Mill City | Where deer surprised us by the bay.`.trim();
       const n = gridEl.children[cell.r*STATE.size + cell.c];
       if(n) n.classList.add("selecting");
     });
-    gridEl.addEventListener("pointermove", (e)=>{
+    gridEl.addEventListener("pointermove",(e)=>{
       if(!STATE.selecting) return;
       const cell = getCellFromPoint(e.clientX, e.clientY);
       if(!cell) return;
       const path = pathBetween(STATE.startCell, cell);
-      // visual
       $$(".cell").forEach(n=> n.classList.remove("selecting"));
       path.forEach(({r,c})=>{
         const n = gridEl.children[r*STATE.size + c];
@@ -644,177 +505,161 @@ Mill City | Where deer surprised us by the bay.`.trim();
       });
       STATE.currentPath = path;
     });
-    gridEl.addEventListener("pointerup", ()=>{
+    gridEl.addEventListener("pointerup",()=>{
       if(!STATE.selecting) return;
       const matched = tryMatchPath(STATE.currentPath);
-      // remove selection highlight either way
       clearSelecting();
-      // tiny hint wiggle if no match (optional)
-      if(!matched){
-        // no-op; visuals already cleared
-      }
+      if(matched){ sprinkleHearts(6,true); }
     });
 
-    /* --------------------------
-       Orchestration
-    ---------------------------*/
-    function regenerate(withRetry=true){
-      // size logic
-      let size = parseInt(gridSizeEl.value, 10);
-      const allowDiagonals = diagonalsEl.checked;
-      const words = STATE.words;
-
-      if($("#autoSize").checked){
-        size = autoSize(words);
-        gridSizeEl.value = size;
-      }
-      // attempt to generate; if fails, grow size slightly and retry
-      let attempt = 0;
-      let out = null;
-      while(attempt < 6){
-        out = generate(words, size + attempt, allowDiagonals);
-        if(out) break;
-        attempt++;
-      }
-      if(!out){
-        alert("Couldn't fit all words. Try increasing the grid size or disabling diagonals.");
-        return;
-      }
-      STATE.grid = out.grid;
-      STATE.placements = out.placements;
-      STATE.size = out.size;
-      STATE.allowDiagonals = allowDiagonals;
-      STATE.found = new Set();
-
-      renderGrid();
+    btnRegenerate.addEventListener("click", ()=> regenerate(true));
+    btnHighlight.addEventListener("click", ()=>{
+      STATE.highlightAll = !STATE.highlightAll;
+      btnHighlight.textContent = STATE.highlightAll ? "Clear Highlights" : "Highlight All";
+      updateFoundUI();
+    });
+    btnAnswers.addEventListener("click", ()=>{
+      STATE.answersShown = !STATE.answersShown;
+      btnAnswers.textContent = STATE.answersShown ? "Hide Answers" : "Show Answers";
       renderClues();
-      saveLocal();
-      sprinkleHearts(10); // cute pulse
-    }
+    });
+    btnCloseWin.addEventListener("click", ()=> ribbon.classList.remove("show"));
 
-    function revealAll(){
-      STATE.found = new Set(STATE.placements.map((_,i)=>i));
-      updateFoundUI();
-    }
+    // Long‑press to reveal builder
+    let lpTimer=null;
+    logo.addEventListener("pointerdown", ()=>{
+      lpTimer = setTimeout(()=> toggleBuilder(true), 1200);
+    });
+    ["pointerup","pointerleave","pointercancel"].forEach(ev=>{
+      logo.addEventListener(ev, ()=> { clearTimeout(lpTimer); lpTimer=null; });
+    });
 
-    function resetProgress(){
-      STATE.found = new Set();
-      updateFoundUI();
-    }
-
-    function celebrate(){
-      winMsg.textContent = (dedicationEl.value || "You’re my favorite adventure 💕");
-      $("#win").classList.add("show");
-      sprinkleHearts(22, true);
-    }
-
-    btnCloseWin.addEventListener("click", ()=> $("#win").classList.remove("show"));
-    btnReveal.addEventListener("click", revealAll);
-    btnRegenerate.addEventListener("click", ()=>regenerate(true));
-    btnApply.addEventListener("click", ()=>{
+    // Builder listeners (only exist in builder mode)
+    if(btnApply) btnApply.addEventListener("click", ()=>{
       const words = buildWordObjects(linesEl.value);
-      if(words.length === 0) return alert("Please add at least one valid word (3+ characters).");
+      if(words.length===0) return alert("Please add at least one valid word (3+ characters).");
       STATE.words = words;
       regenerate(true);
     });
-    btnShare.addEventListener("click", ()=>{
+    if(btnShare) btnShare.addEventListener("click", ()=>{
       const payload = {
         t: $("#pageTitle").textContent,
-        d: dedicationEl.value || "",
         lines: linesEl.value.trim(),
         diag: diagonalsEl.checked,
         auto: autoSizeEl.checked,
         size: parseInt(gridSizeEl.value,10) || 16
       };
-      const hash = "#d=" + encodeData(payload);
-      const url = location.origin + location.pathname + hash;
-      navigator.clipboard?.writeText(url).then(()=>{
-        alert("Link copied! It includes your words, dedication, and settings.");
-      }, ()=>{
-        prompt("Copy your share link:", url);
-      });
+      const url = location.origin + location.pathname + "?edit=0#d=" + encodeData(payload);
+      navigator.clipboard?.writeText(url).then(()=> alert("Share link copied! (Editor hidden)"),
+                                            ()=> prompt("Copy your share link:", url));
     });
-    btnReset.addEventListener("click", resetProgress);
-    dedicationEl.addEventListener("input", ()=> saveLocal());
+    if(btnReset) btnReset.addEventListener("click", ()=>{
+      STATE.found = new Set();
+      STATE.highlightAll = false;
+      btnHighlight.textContent = "Highlight All";
+      updateFoundUI();
+    });
 
-    function loadFromHash(){
-      const h = location.hash || "";
-      const m = h.match(/#d=([^&]+)/);
-      if(!m) return null;
-      const data = decodeData(m[1]);
-      if(!data) return null;
-      if(data.t) $("#pageTitle").textContent = data.t;
-      dedicationEl.value = data.d || "";
-      linesEl.value = (data.lines || DEFAULT_LINES).trim();
-      diagonalsEl.checked = !!data.diag;
-      autoSizeEl.checked = !!data.auto;
-      gridSizeEl.value = data.size || 16;
-      return true;
+    /* --------------------------
+       Orchestration
+    ---------------------------*/
+    function regenerate(){
+      let size = parseInt($("#gridSize")?.value || STATE.size, 10);
+      const allowDiag = $("#diagonals") ? $("#diagonals").checked : true;
+      if($("#autoSize")?.checked){ size = autoSize(STATE.words); $("#gridSize").value = size; }
+      let out=null, tries=0;
+      while(tries<6){
+        out = generate(STATE.words, size+tries, allowDiag);
+        if(out) break;
+        tries++;
+      }
+      if(!out) return alert("Couldn't fit all words. Increase grid size.");
+      STATE.grid = out.grid;
+      STATE.placements = out.placements;
+      STATE.size = out.size;
+      STATE.found = new Set();
+      STATE.highlightAll = false;
+      btnHighlight.textContent = "Highlight All";
+      renderGrid(); renderClues();
+      sprinkleHearts(10);
+      saveLocal();
     }
 
     function saveLocal(){
-      const payload = {
-        title: $("#pageTitle").textContent,
-        dedication: dedicationEl.value || "",
-        lines: linesEl.value.trim(),
-        diag: diagonalsEl.checked,
-        auto: autoSizeEl.checked,
-        size: parseInt(gridSizeEl.value,10) || 16,
-        found: Array.from(STATE.found)
-      };
-      try{ localStorage.setItem("ws-love-save", JSON.stringify(payload)); }catch(e){}
+      try{
+        const payload = {
+          lines: $("#lines")?.value || DEFAULT_LINES,
+          diag: $("#diagonals")?.checked ?? true,
+          auto: $("#autoSize")?.checked ?? true,
+          size: parseInt($("#gridSize")?.value || "16",10),
+          builder: document.body.classList.contains("builder")
+        };
+        localStorage.setItem("ws-love-v2", JSON.stringify(payload));
+      }catch(e){}
     }
     function loadLocal(){
       try{
-        const raw = localStorage.getItem("ws-love-save");
+        const raw = localStorage.getItem("ws-love-v2");
         if(!raw) return false;
-        const data = JSON.parse(raw);
-        $("#pageTitle").textContent = data.title || $("#pageTitle").textContent;
-        dedicationEl.value = data.dedication || "";
-        linesEl.value = (data.lines || DEFAULT_LINES).trim();
-        diagonalsEl.checked = !!data.diag;
-        autoSizeEl.checked = !!data.auto;
-        gridSizeEl.value = data.size || 16;
+        const d = JSON.parse(raw);
+        if(linesEl) linesEl.value = (d.lines || DEFAULT_LINES).trim();
+        if(diagonalsEl) diagonalsEl.checked = !!d.diag;
+        if(autoSizeEl) autoSizeEl.checked = !!d.auto;
+        if(gridSizeEl) gridSizeEl.value = d.size || 16;
+        if(d.builder) document.body.classList.add("builder");
         return true;
       }catch(e){ return false; }
     }
 
-    /* --------------------------
-       Cute background hearts
-    ---------------------------*/
+    function loadFromHash(){
+      const m = (location.hash||"").match(/#d=([^&]+)/);
+      if(!m) return false;
+      const data = decodeData(m[1]);
+      if(!data) return false;
+      if(data.t) $("#pageTitle").textContent = data.t;
+      if(linesEl) linesEl.value = (data.lines || DEFAULT_LINES).trim();
+      if(diagonalsEl) diagonalsEl.checked = !!data.diag;
+      if(autoSizeEl) autoSizeEl.checked = !!data.auto;
+      if(gridSizeEl) gridSizeEl.value = data.size || 16;
+      return true;
+    }
+
+    function toggleBuilder(forceOn){
+      document.body.classList.toggle("builder", forceOn ?? !document.body.classList.contains("builder"));
+      saveLocal();
+    }
+
     function sprinkleHearts(n=12, faster=false){
       const box = $("#bgHearts");
       for(let i=0;i<n;i++){
         const s = document.createElement("span");
-        s.textContent = Math.random()<0.2 ? "♡" : "❤";
-        const left = Math.random()*100;
-        const delay = Math.random()* (faster? 2.5 : 6);
-        const dur = 5 + Math.random()* (faster? 4 : 10);
-        s.style.left = left+"vw";
+        s.textContent = Math.random()<0.3 ? "♡" : "❤";
+        s.style.left = (Math.random()*100)+"vw";
         s.style.setProperty("--shift", (Math.random()*40-20)+"vw");
-        s.style.animationDuration = dur+"s";
-        s.style.animationDelay = delay+"s";
+        s.style.animationDuration = (5 + Math.random()*(faster?4:10))+"s";
+        s.style.animationDelay = (Math.random()*(faster?2.2:6))+"s";
         box.appendChild(s);
-        setTimeout(()=> s.remove(), (delay+dur)*1000 + 200);
+        setTimeout(()=> s.remove(), 16000);
       }
     }
     setInterval(()=> sprinkleHearts(rand(2)+1), 1600);
 
-    /* --------------------------
-       Boot
-    ---------------------------*/
     function start(){
-      // init editor area from hash/local/default
-      const okHash = loadFromHash();
-      if(!okHash){
-        const okLocal = loadLocal();
-        if(!okLocal){
-          linesEl.value = DEFAULT_LINES;
-        }
+      // Builder mode via query param
+      const params = new URLSearchParams(location.search);
+      if(params.get("edit")==="1"){ document.body.classList.add("builder"); }
+
+      const hadHash = loadFromHash();
+      if(!hadHash){
+        const hadLocal = loadLocal();
+        if(!hadLocal && linesEl){ linesEl.value = DEFAULT_LINES; }
       }
-      // words from editor
-      STATE.words = buildWordObjects(linesEl.value);
-      regenerate(true);
+      // Initialize words
+      const source = (linesEl && linesEl.value && document.body.classList.contains("builder"))
+        ? linesEl.value
+        : DEFAULT_LINES;
+      STATE.words = buildWordObjects(source);
+      regenerate();
     }
     document.addEventListener("DOMContentLoaded", start);
   </script>
